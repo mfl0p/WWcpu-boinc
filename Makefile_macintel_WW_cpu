@@ -1,0 +1,40 @@
+#
+# Mac AP26 CPU makefile - Bill Michael May 10 2019
+#
+# Must have AP26 master source folder in same directory as boinc-master folder
+#  critical path assignment is to the boinc-master folder BOINC__DIR
+# Must have alias to MacOSX10.6.sdk in same folder as this makefile and source code
+#   if using a specific OSX target release (CFLAGS)
+# Must copy config.h from boinc-master/clientgui/mac to this same folder
+# make -B -f makefile_macintel_ap26_cpu
+#
+
+CC = g++
+#CC = MACOSX_DEPLOYMENT_TARGET=10.7 gcc (or just gcc)
+LD = $(CC)
+
+APP = WW_cpu_macintel64
+
+SRC = main.cpp wwcpu.cpp
+OBJ = 
+
+BOINC_DIR = ../boinc
+
+BOINC_INC = -I$(BOINC_DIR)/api -I$(BOINC_DIR)/lib -I$(BOINC_DIR)/clientgui/Mac -I$(BOINC_DIR)
+BOINC_LIB = -L$(BOINC_DIR)/mac_build/build/Deployment/ -lboinc -lboinc_api
+
+#-stdlib=libc++
+
+DFLAGS  = 
+#CFLAGS  = -Wa,-q -I . -O3 -arch x86_64 -isysroot MacOSX10.6.sdk -mmacosx-version-min=10.7
+CFLAGS  = -I . -O3 -arch x86_64
+LDFLAGS = $(CFLAGS)
+
+all : $(APP) 
+
+$(APP) : $(SRC)
+	$(LD) $(LDFLAGS) $(BOINC_LIB) $(BOINC_INC) -o $@ $^
+
+clean :
+	rm -f *.o $(APP)
+
